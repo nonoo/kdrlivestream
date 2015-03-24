@@ -1,0 +1,2 @@
+- changing the scheduler to a global one instead separate schedulers for every connected client 
+- adding a README.md
