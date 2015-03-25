@@ -25,9 +25,13 @@ public class PeriodicLastSeenUpdater implements IScheduledJob {
 		for (IConnection conn : connections) {
 			Object connUserIndex = conn.getAttribute("userIndex");
 			Object connStreamName = conn.getAttribute("streamName");
+			Object connUserIsPublishing = conn.getAttribute("userIsPublishing");
+
+			if (connUserIsPublishing == null)
+				connUserIsPublishing = false;
 			
 			if (connUserIndex != null && connStreamName != null)
-				dbManager.updateLastSeenForUser((String)connStreamName, (int)connUserIndex);
+				dbManager.updateLastSeenForUser((String)connStreamName, (int)connUserIndex, (boolean)connUserIsPublishing);
 		}
 	}
 }

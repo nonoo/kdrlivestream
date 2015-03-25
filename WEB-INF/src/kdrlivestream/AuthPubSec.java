@@ -26,6 +26,8 @@ public class AuthPubSec implements IStreamPublishSecurity {
 		if (userName != null)
 			log.info("user " + (String)userName + " authorized to publish stream " + name + ": " + (publishAllowed.equals(true) ? "yes" : "no"));
 
+		conn.setAttribute("userIsPublishing", true);
+		
 		return publishAllowed.equals(true);
 	}
 
