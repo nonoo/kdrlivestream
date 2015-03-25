@@ -106,13 +106,13 @@ public class DBManager {
 		return result;
 	}
 
-	public boolean isUserAuthorized(int userIndex, String password) {
+	public boolean isUserAuthorized(String userName, String password) {
 		Connection dbConnection = null;
 		boolean result = false;
 		PreparedStatement dbStatement = null;
 		ResultSet dbResultSet = null;
 
-		log.info("authorizing user with index " + userIndex + "...");
+		log.info("authorizing user " + userName + "...");
 
 		if (basicDS == null) {
 			log.error("database not initialized!");
@@ -121,8 +121,8 @@ public class DBManager {
 
 		try {
 			dbConnection = basicDS.getConnection();
-			dbStatement = dbConnection.prepareStatement("SELECT `passhash` FROM `" + KDRLiveStream.config.getMySQLDBTablePrefix() + "users` WHERE `index` = (?) && `enabled` = 1");
-			dbStatement.setInt(1, userIndex);
+			dbStatement = dbConnection.prepareStatement("SELECT `passhash` FROM `" + KDRLiveStream.config.getMySQLDBTablePrefix() + "users` WHERE `email` = (?) && `enabled` = 1");
+			dbStatement.setString(1, userName);
 			dbResultSet = dbStatement.executeQuery();
 
 			if (dbResultSet.next() && dbResultSet.getString(1).equals(calculateSHA1(password)))
@@ -145,9 +145,9 @@ public class DBManager {
 		}
 
 		if (result) {
-			log.info("user with index " + userIndex + " authorized.");
+			log.info("user " + userName + " authorized.");
 		} else {
-			log.error("user with index" + userIndex + " not authorized.");
+			log.error("user " + userName + " not authorized.");
 		}
 
 		return result;

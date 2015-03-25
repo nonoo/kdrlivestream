@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.red5.server.adapter.ApplicationLifecycle;
 import org.red5.server.api.IConnection;
-import org.red5.server.api.scheduling.IScheduledJob;
 import org.red5.server.api.scheduling.ISchedulingService;
 import org.red5.server.exception.ClientRejectedException;
 import org.red5.server.util.UrlQueryStringMap;
@@ -24,8 +23,6 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 
 	// Called when a client connects to our app.
 	public boolean appConnect(IConnection conn, Object[] params) {
-		ISchedulingService scheduler = null;
-
 		Map<String, Object> connectionParams = conn.getConnectParams();
 		log.info("connection params: " + connectionParams);
 
@@ -47,16 +44,14 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 		String password = queryString.get("p");
 		//log.info("password: " + password);
 
-		int userIndex = dbManager.getUserIndex(userName);
-		if (userIndex < 0)
-			throw new ClientRejectedException();
+		if (dbManager.isUserAuthorized(userName, password)) {
+			int userIndex = dbManager.getUserIndex(userName);
+			if (userIndex < 0)
+				throw new ClientRejectedException();
 
-		if (dbManager.isUserAuthorized(userIndex, password)) {
+			conn.setAttribute("userName", userName);
 			conn.setAttribute("userIndex", userIndex);
 			conn.setAttribute("publishAllowed", dbManager.isPublishAllowedForUser(userIndex));
-			conn.setAttribute("scheduledJob", new PeriodicUpdater(conn));
-			scheduler = (ISchedulingService)conn.getScope().getContext().getBean(ISchedulingService.BEAN_NAME);
-			conn.setAttribute("scheduledPeriodicUpdate", scheduler.addScheduledJob(5000, (IScheduledJob)conn.getAttribute("scheduledJob")));
 		} else
 			throw new ClientRejectedException();
 

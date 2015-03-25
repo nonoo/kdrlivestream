@@ -41,5 +41,4 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 
 		return true;
 	}
-
 }

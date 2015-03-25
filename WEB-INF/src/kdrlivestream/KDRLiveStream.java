@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.red5.server.adapter.ApplicationAdapter;
 import org.red5.server.adapter.IApplication;
 import org.red5.server.api.IConnection;
+import org.red5.server.api.scheduling.ISchedulingService;
 import org.red5.server.api.scope.IScope;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -27,11 +28,16 @@ public class KDRLiveStream extends ApplicationAdapter implements ApplicationCont
 	
 	@Override
 	public boolean appStart(IScope app) {
+		ISchedulingService scheduler = null;
+
 		log.info("kdrlivestream app started.");
 
 		addListener((IApplication)applicationContext.getBean("authHandler"));
 		registerStreamPublishSecurity(new AuthPubSec());
 		registerStreamPlaybackSecurity(new AuthPlaySec());
+
+		scheduler = (ISchedulingService)app.getContext().getBean(ISchedulingService.BEAN_NAME);
+		scheduler.addScheduledJob(5000, new PeriodicLastSeenUpdater());
 
 		return super.appStart(app);
 	}
