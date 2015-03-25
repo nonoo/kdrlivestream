@@ -25,38 +25,94 @@ public class Config {
 		}
 	}
 
+	boolean getAllowOnlyOneInstancePerUser() throws ConfigFileErrorException {
+		String value;
+
+		if (ini == null)
+			throw new ConfigFileErrorException("config file not opened");
+
+		value = ini.get("general", "allowonlyoneinstanceperuser");
+		if (value == null)
+			return true;
+		
+		return (value.equals("1") || value.equals("yes"));
+	}
+
+	boolean getStoreLastSeenInfoInDB() throws ConfigFileErrorException {
+		String value;
+
+		if (ini == null)
+			throw new ConfigFileErrorException("config file not opened");
+
+		value = ini.get("general", "storelastseeninfoindb");
+		if (value == null)
+			return false;
+		
+		return (value.equals("1") || value.equals("yes"));
+	}
+
 	String getMySQLDBHost() throws ConfigFileErrorException {
+		String value;
+
 		if (ini == null)
 			throw new ConfigFileErrorException("config file not opened");
 		
-		return ini.get("mysqldb", "host");
+		value = ini.get("mysqldb", "host");
+		if (value == null)
+			return "";
+
+		return value;
 	}
 
 	String getMySQLDBName() throws ConfigFileErrorException {
+		String value;
+
 		if (ini == null)
 			throw new ConfigFileErrorException("config file not opened");
 		
-		return ini.get("mysqldb", "dbname");
+		value = ini.get("mysqldb", "dbname");
+		if (value == null)
+			return "";
+
+		return value;
 	}
 
 	String getMySQLDBUser() throws ConfigFileErrorException {
+		String value;
+
 		if (ini == null)
 			throw new ConfigFileErrorException("config file not opened");
 		
-		return ini.get("mysqldb", "user");
+		value = ini.get("mysqldb", "user");
+		if (value == null)
+			return "";
+
+		return value;
 	}
 
 	String getMySQLDBPassword() throws ConfigFileErrorException {
+		String value;
+
 		if (ini == null)
 			throw new ConfigFileErrorException("config file not opened");
 		
-		return ini.get("mysqldb", "password");
+		value = ini.get("mysqldb", "password");
+		if (value == null)
+			return "";
+
+		return value;
 	}
 
 	String getMySQLDBTablePrefix() throws ConfigFileErrorException {
+		String value;
+
 		if (ini == null)
 			throw new ConfigFileErrorException("config file not opened");
 
-		return ini.get("mysqldb", "tableprefix");
+		value = ini.get("mysqldb", "tableprefix");
+		if (value == null)
+			return "kdrlivestream-";
+
+		return value;
 	}
 }

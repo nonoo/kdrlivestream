@@ -36,8 +36,15 @@ public class KDRLiveStream extends ApplicationAdapter implements ApplicationCont
 		registerStreamPublishSecurity(new AuthPubSec());
 		registerStreamPlaybackSecurity(new AuthPlaySec());
 
-		scheduler = (ISchedulingService)app.getContext().getBean(ISchedulingService.BEAN_NAME);
-		scheduler.addScheduledJob(5000, new PeriodicLastSeenUpdater());
+		try {
+			if (config != null && config.getStoreLastSeenInfoInDB()) {
+				scheduler = (ISchedulingService)app.getContext().getBean(ISchedulingService.BEAN_NAME);
+				scheduler.addScheduledJob(5000, new PeriodicLastSeenUpdater(app));
+			}
+		} catch (ConfigFileErrorException e) {
+			log.error("error reading config variable: " + e.getMessage());
+			e.printStackTrace();
+		}
 
 		return super.appStart(app);
 	}

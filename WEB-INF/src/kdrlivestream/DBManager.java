@@ -18,17 +18,21 @@ public class DBManager {
 	private static BasicDataSource basicDS = null;
 
 	static {
-		basicDS = new BasicDataSource();
-		basicDS.setDriverClassName("com.mysql.jdbc.Driver");
-		try {
-			basicDS.setUsername(KDRLiveStream.config.getMySQLDBUser());
-			basicDS.setPassword(KDRLiveStream.config.getMySQLDBPassword());
-			basicDS.setUrl("jdbc:mysql://" + KDRLiveStream.config.getMySQLDBHost() + "/" + KDRLiveStream.config.getMySQLDBName());
-		} catch (ConfigFileErrorException e) {
-			log.error("error reading config variable: " + e.getMessage());
-			e.printStackTrace();
+		if (KDRLiveStream.config == null) {
+			log.error("config not initialized, can't initialize database access");
+		} else {
+			basicDS = new BasicDataSource();
+			basicDS.setDriverClassName("com.mysql.jdbc.Driver");
+			try {
+				basicDS.setUsername(KDRLiveStream.config.getMySQLDBUser());
+				basicDS.setPassword(KDRLiveStream.config.getMySQLDBPassword());
+				basicDS.setUrl("jdbc:mysql://" + KDRLiveStream.config.getMySQLDBHost() + "/" + KDRLiveStream.config.getMySQLDBName());
+			} catch (ConfigFileErrorException e) {
+				log.error("error reading config variable: " + e.getMessage());
+				e.printStackTrace();
+			}
+			basicDS.setInitialSize(1); // Set the number of concurrent DB connections.
 		}
-		basicDS.setInitialSize(1); // Set the number of concurrent DB connections.
 	}
 
 	private static String byteToHex(final byte[] hash) {

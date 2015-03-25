@@ -17,11 +17,12 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 
 		for (IConnection conn : connections) {
 			Object connUserIndex = conn.getAttribute("userIndex");
+			Object connUserName = conn.getAttribute("userName");
 			Object connStreamName = conn.getAttribute("streamName");
 			
 			if (connUserIndex != null && connUserIndex.equals(userIndex) &&
 					connStreamName != null && connStreamName.equals(streamName)) {
-				log.info("closing already opened stream");
+				log.info("closing already opened stream for user " + connUserName);
 				conn.close();
 			}
 		}
@@ -37,7 +38,13 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 		if (userIndex == null)
 			return false;
 
-		closeAlreadyOpenedStreamsForUser((int)userIndex, name);
+		try {
+			if (KDRLiveStream.config != null && KDRLiveStream.config.getAllowOnlyOneInstancePerUser())
+				closeAlreadyOpenedStreamsForUser((int)userIndex, name);
+		} catch (ConfigFileErrorException e) {
+			log.error("error reading config variable: " + e.getMessage());
+			e.printStackTrace();
+		}
 
 		// Now we know what stream the client wants to access, so storing it as a connection attribute.
 		conn.setAttribute("streamName", name);
