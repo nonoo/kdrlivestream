@@ -14,12 +14,19 @@ public class AuthPubSec implements IStreamPublishSecurity {
 	@Override
 	public boolean isPublishAllowed(IScope scope, String name, String mode) {
 		IConnection conn = Red5.getConnectionLocal();
+		Object publishAllowed = conn.getAttribute("publishAllowed");
+		Object userName = conn.getAttribute("userName");
 
 		// Now we know what stream the client wants to access, so storing it as a connection attribute.
 		conn.setAttribute("streamName", name);
-		log.info("user with index " + conn.getAttribute("userIndex") + " authorized to publish stream " + name + ": " + (conn.getAttribute("publishAllowed").equals(true) ? "yes" : "no"));
 
-		return conn.getAttribute("publishAllowed").equals(true);
+		if (publishAllowed == null)
+			return false;
+		
+		if (userName != null)
+			log.info("user " + (String)userName + " authorized to publish stream " + name + ": " + (publishAllowed.equals(true) ? "yes" : "no"));
+
+		return publishAllowed.equals(true);
 	}
 
 }

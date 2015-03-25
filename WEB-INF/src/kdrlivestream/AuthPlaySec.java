@@ -31,13 +31,18 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 	@Override
 	public boolean isPlaybackAllowed(IScope scope, String name, int start, int length, boolean flushPlaylist) {
 		IConnection conn = Red5.getConnectionLocal();
-		int userIndex = (int)conn.getAttribute("userIndex");
+		Object userIndex = conn.getAttribute("userIndex");
+		Object userName = conn.getAttribute("userName");
 
-		closeAlreadyOpenedStreamsForUser(userIndex, name);
+		if (userIndex == null)
+			return false;
+
+		closeAlreadyOpenedStreamsForUser((int)userIndex, name);
 
 		// Now we know what stream the client wants to access, so storing it as a connection attribute.
 		conn.setAttribute("streamName", name);
-		log.info("user with index " + conn.getAttribute("userIndex") + " is opening stream " + name);
+		if (userName != null)
+			log.info("user " + (String)userName + " is opening stream " + name);
 
 		return true;
 	}

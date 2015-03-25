@@ -238,7 +238,7 @@ public class DBManager {
 		}
 
 		if (result == 0) {
-			log.error("last seen info for user with index " + userIndex + " failed.");
+			log.error("last seen info update for user with index " + userIndex + " failed.");
 		} else {
 			//log.info("last seen info for user with index " + userIndex + " updated.");
 		}
