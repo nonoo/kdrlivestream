@@ -28,15 +28,42 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 		}
 	}
 
+	private boolean isPublicStream(String streamName) {
+		Set<IConnection> connections = Red5.getConnectionLocal().getScope().getClientConnections();
+
+		for (IConnection conn : connections) {
+			Object connUserAuthorized = conn.getAttribute("userAuthorized");
+			Object connIsPublishing = conn.getAttribute("userIsPublishing");
+			Object connPublicStream = conn.getAttribute("publicStream");
+			Object connStreamName = conn.getAttribute("streamName");
+
+			if (connUserAuthorized != null && (boolean)connUserAuthorized == true &&
+					connIsPublishing != null && (boolean)connIsPublishing == true &&
+					connStreamName != null && connStreamName.equals(streamName) &&
+					connPublicStream != null && (boolean)connPublicStream == true) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Called by Red5 to check if user is allowed to play stream.
 	@Override
 	public boolean isPlaybackAllowed(IScope scope, String name, int start, int length, boolean flushPlaylist) {
 		IConnection conn = Red5.getConnectionLocal();
+		Object userAuthorized = conn.getAttribute("userAuthorized");
 		Object userIndex = conn.getAttribute("userIndex");
 		Object userName = conn.getAttribute("userName");
 
-		if (userIndex == null)
+		if (isPublicStream(name)) {
+			log.info("stream " + name + " is public, allowing access");
+			return true;
+		}
+		
+		if (userIndex == null || userAuthorized == null || (boolean)userAuthorized != true) {
+			log.info("user is not authorized and stream " + name + " is not public, closing connection");
 			return false;
+		}
 
 		try {
 			if (KDRLiveStream.config != null && KDRLiveStream.config.getAllowOnlyOneInstancePerUser())

@@ -9,7 +9,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.red5.server.adapter.ApplicationLifecycle;
 import org.red5.server.api.IConnection;
 import org.red5.server.api.scheduling.ISchedulingService;
-import org.red5.server.exception.ClientRejectedException;
 import org.red5.server.util.UrlQueryStringMap;
 
 public class AuthenticationHandler extends ApplicationLifecycle {
@@ -26,34 +25,31 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 		Map<String, Object> connectionParams = conn.getConnectParams();
 		log.info("connection params: " + connectionParams);
 
-		if (!connectionParams.containsKey("queryString")) {
-			log.error("no connection query parameters given");
-			throw new ClientRejectedException();
+		if (connectionParams.containsKey("queryString")) {
+			String rawQueryString = (String) connectionParams.get("queryString");
+			//log.info("queryString: " + rawQueryString);
+
+			// Parse into a usable query string.
+			UrlQueryStringMap<String, String> queryString = UrlQueryStringMap.parse(rawQueryString);
+
+			String userName = queryString.get("u");
+			String password = queryString.get("p");
+
+			if (userName != null && password != null) {
+				int userIndex = dbManager.getUserIndex(userName);
+				conn.setAttribute("userName", userName);
+				conn.setAttribute("userIndex", userIndex);
+
+				if (dbManager.isUserAuthorized(userName, password)) {
+					conn.setAttribute("userAuthorized", true);
+					conn.setAttribute("publishAllowed", dbManager.isPublishAllowedForUser(userIndex));
+
+					String publicStream = queryString.get("pub");
+					if (publicStream != null)
+						conn.setAttribute("publicStream", publicStream.equals("1"));
+				}
+			}
 		}
-
-		String rawQueryString = (String) connectionParams.get("queryString");
-		log.info("queryString: " + rawQueryString);
-
-		// Parse into a usable query string.
-		UrlQueryStringMap<String, String> queryString = UrlQueryStringMap.parse(rawQueryString);
-
-		// Get the values we want.
-		String userName = queryString.get("u");
-		//log.info("username: " + userName);
-
-		String password = queryString.get("p");
-		//log.info("password: " + password);
-
-		if (dbManager.isUserAuthorized(userName, password)) {
-			int userIndex = dbManager.getUserIndex(userName);
-			if (userIndex < 0)
-				throw new ClientRejectedException();
-
-			conn.setAttribute("userName", userName);
-			conn.setAttribute("userIndex", userIndex);
-			conn.setAttribute("publishAllowed", dbManager.isPublishAllowedForUser(userIndex));
-		} else
-			throw new ClientRejectedException();
 
 		return true;
 	}
