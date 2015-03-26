@@ -2,7 +2,7 @@
 Live streaming app for Red5 with authentication using a MySQL database.
 
 ## Introduction
-If you want to stream live content, you can use Red5 and it's built-in webapp called *live*, but it doesn't use authentication. Everyone will be able to publish and watch streams using your private Red5 server.
+If you want to stream live content, you can use Red5 and it's built-in webapp called **live**, but it doesn't use authentication. Everyone will be able to publish and watch streams using your private Red5 server.
 
 This Red5 webapp always authenticates publishers using usernames and passwords stored in a MySQL database. By default, every viewer has to be authenticated too, but publishers can specify that their streams are public. Public streams can be watched without any authentication.
 
@@ -35,18 +35,18 @@ vlc "rtmp://localhost:1935/kdrlivestream/stream1"
 ```
 
 ### How to install *kdrlivestream*
-Unzip the release, copy *kdrlivestream.ini* to Red5's conf subdirectory, and create the needed MySQL tables in your database according to the SQL sample file *kdrlivestream.sql*.
-Copy the kdrlivestream directory from the .zip file to Red5's webapps subdirectory.
+Unzip the [latest release](https://github.com/nonoo/kdrlivestream/tree/master/releases), copy **kdrlivestream.ini** to Red5's conf subdirectory, and create the needed MySQL tables in your database according to the SQL sample file **kdrlivestream.sql**.
+Copy the **kdrlivestream** directory from the .zip file to Red5's **webapps** subdirectory.
 
 #### kdrlivestream.ini settings
 
 General section:
-- allowonlyoneinstanceperuser - set this to 1 to allow only one playback instance per user
-- storelastseeninfoindb - set this to 1 to have kdrlivestream store to the database who streams and plays what (every 5 seconds)
+- **allowonlyoneinstanceperuser** - set this to 1 to allow only one playback instance per user
+- **storelastseeninfoindb** - set this to 1 to have kdrlivestream store to the database who streams and plays what (every 5 seconds)
 
 MySQL DB section:
-- host - MySQL host (and optionally the port)
-- dbname - MySQL database name
-- user
-- password
-- tableprefix - each table used by kdrlivestream has this prefix
+- **host** - MySQL host (and optionally the port)
+- **dbname** - MySQL database name
+- **user**
+- **password**
+- **tableprefix** - each table used by kdrlivestream has this prefix
