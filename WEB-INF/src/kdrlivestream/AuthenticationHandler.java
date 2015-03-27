@@ -23,6 +23,7 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 	// Called when a client connects to our app.
 	public boolean appConnect(IConnection conn, Object[] params) {
 		Map<String, Object> connectionParams = conn.getConnectParams();
+		UrlQueryStringMap<String, String> queryString;
 		log.info("connection params: " + connectionParams);
 
 		if (connectionParams.containsKey("queryString")) {
@@ -30,7 +31,11 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 			//log.info("queryString: " + rawQueryString);
 
 			// Parse into a usable query string.
-			UrlQueryStringMap<String, String> queryString = UrlQueryStringMap.parse(rawQueryString);
+			try {
+				queryString = UrlQueryStringMap.parse(rawQueryString);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				return true;
+			}
 
 			String userName = queryString.get("u");
 			String password = queryString.get("p");
