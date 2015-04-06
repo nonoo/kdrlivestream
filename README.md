@@ -28,6 +28,12 @@ Streams can be watched with any client which supports RTMP protocol, for example
 vlc "rtmp://localhost:1935/kdrlivestream?u=user2@ha5kdr.hu&p=password/stream1"
 ```
 
+You can replace @ characters with _at_ when specifying usernames. Example:
+
+```
+vlc "rtmp://localhost:1935/kdrlivestream?u=user2_at_ha5kdr.hu&p=password/stream1"
+```
+
 Watching a public stream:
 
 ```
@@ -41,8 +47,8 @@ Copy the **kdrlivestream** directory from the .zip file to Red5's **webapps** su
 #### kdrlivestream.ini settings
 
 General section:
-- **allowonlyoneinstanceperuser** - set this to 1 to allow only one playback instance per user
-- **storelastseeninfoindb** - set this to 1 to have kdrlivestream store to the database who streams and plays what (every 5 seconds)
+- **allowonlyoneinstanceperuser** - If this is enabled, and the connecting user doesn't have "allowmultipleinstances" set in the database, only one playback instance will be allowed for the user. 
+- **storelastseeninfoindb** - Set this to 1 to have kdrlivestream store to the database who streams and plays what (every 5 seconds)
 
 MySQL DB section:
 - **host** - MySQL host (and optionally the port)
