@@ -253,7 +253,7 @@ public class DBManager {
 		return result;
 	}
 
-	public void updateLastSeenForUser(String streamName, int userIndex, boolean userIsPublishing) {
+	public void updateLastSeenForUser(String streamName, int userIndex, boolean userIsPublishing, boolean publicStream) {
 		Connection dbConnection = null;
 		int result = 0;
 		PreparedStatement dbStatement = null;
@@ -268,10 +268,11 @@ public class DBManager {
 
 		try {
 			dbConnection = basicDS.getConnection();
-			dbStatement = dbConnection.prepareStatement("REPLACE INTO `" + KDRLiveStream.config.getMySQLDBTablePrefix() + "lastseen` (`streamname`, `userindex`, `userispublishing`, `lastseen`) values ((?), (?), (?), NOW())");
+			dbStatement = dbConnection.prepareStatement("REPLACE INTO `" + KDRLiveStream.config.getMySQLDBTablePrefix() + "lastseen` (`streamname`, `userindex`, `userispublishing`, `public`, `lastseen`) values ((?), (?), (?), (?), NOW())");
 			dbStatement.setString(1, streamName);
 			dbStatement.setInt(2, userIndex);
 			dbStatement.setBoolean(3, userIsPublishing);
+			dbStatement.setBoolean(4, publicStream);
 			result = dbStatement.executeUpdate(); // Note: result will be non-zero if update was successful.
 		} catch (ConfigFileErrorException e) {
 			log.error("error reading config variable: " + e.getMessage());
