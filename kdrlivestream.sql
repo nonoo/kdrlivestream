@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `kdrlivestream-lastseen` (
   `streamname` varchar(50) NOT NULL,
   `userindex` int(11) NOT NULL,
   `userispublishing` tinyint(1) NOT NULL DEFAULT '0',
+  `public` tinyint(1) NOT NULL DEFAULT '0', 
   `lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `streamuser` (`streamname`,`userindex`),
   KEY `userindex` (`userindex`)
