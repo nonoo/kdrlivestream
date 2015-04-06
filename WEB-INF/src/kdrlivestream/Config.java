@@ -25,19 +25,6 @@ public class Config {
 		}
 	}
 
-	boolean getAllowOnlyOneInstancePerUser() throws ConfigFileErrorException {
-		String value;
-
-		if (ini == null)
-			throw new ConfigFileErrorException("config file not opened");
-
-		value = ini.get("general", "allowonlyoneinstanceperuser");
-		if (value == null)
-			return true;
-		
-		return (value.equals("1") || value.equals("yes"));
-	}
-
 	boolean getStoreLastSeenInfoInDB() throws ConfigFileErrorException {
 		String value;
 

@@ -47,7 +47,6 @@ Copy the **kdrlivestream** directory from the .zip file to Red5's **webapps** su
 #### kdrlivestream.ini settings
 
 General section:
-- **allowonlyoneinstanceperuser** - If this is enabled, and the connecting user doesn't have "allowmultipleinstances" set in the database, only one playback instance will be allowed for the user. 
 - **storelastseeninfoindb** - Set this to 1 to have kdrlivestream store to the database who streams and plays what (every 5 seconds)
 
 MySQL DB section:
