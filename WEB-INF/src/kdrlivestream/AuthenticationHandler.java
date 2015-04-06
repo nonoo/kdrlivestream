@@ -42,12 +42,17 @@ public class AuthenticationHandler extends ApplicationLifecycle {
 
 			if (userName != null && password != null) {
 				int userIndex = dbManager.getUserIndex(userName);
+				if (userIndex < 0) {
+					userName.replace("_at_", "@");
+					userIndex = dbManager.getUserIndex(userName);
+				}
 				conn.setAttribute("userName", userName);
 				conn.setAttribute("userIndex", userIndex);
 
 				if (dbManager.isUserAuthorized(userName, password)) {
 					conn.setAttribute("userAuthorized", true);
 					conn.setAttribute("publishAllowed", dbManager.isPublishAllowedForUser(userIndex));
+					conn.setAttribute("multipleInstancesAllowed", dbManager.isMultipleInstancesAllowedForUser(userIndex));
 
 					String publicStream = queryString.get("pub");
 					if (publicStream != null)

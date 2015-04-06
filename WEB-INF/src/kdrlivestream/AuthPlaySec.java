@@ -54,7 +54,12 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 		Object userAuthorized = conn.getAttribute("userAuthorized");
 		Object userIndex = conn.getAttribute("userIndex");
 		Object userName = conn.getAttribute("userName");
+		Object userMultipleInstancesAllowed = conn.getAttribute("multipleInstancesAllowed");
+		boolean userCanHaveMultipleInstances = false;
 
+		if (userMultipleInstancesAllowed != null && userMultipleInstancesAllowed.equals(true))
+			userCanHaveMultipleInstances = true;
+		
 		if (isPublicStream(name)) {
 			log.info("stream " + name + " is public, allowing access");
 			return true;
@@ -66,7 +71,7 @@ public class AuthPlaySec implements IStreamPlaybackSecurity {
 		}
 
 		try {
-			if (KDRLiveStream.config != null && KDRLiveStream.config.getAllowOnlyOneInstancePerUser())
+			if (KDRLiveStream.config != null && KDRLiveStream.config.getAllowOnlyOneInstancePerUser() && !userCanHaveMultipleInstances)
 				closeAlreadyOpenedStreamsForUser((int)userIndex, name);
 		} catch (ConfigFileErrorException e) {
 			log.error("error reading config variable: " + e.getMessage());

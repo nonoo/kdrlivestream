@@ -205,6 +205,54 @@ public class DBManager {
 		return result;
 	}
 
+	public boolean isMultipleInstancesAllowedForUser(int userIndex) {
+		Connection dbConnection = null;
+		boolean result = false;
+		PreparedStatement dbStatement = null;
+		ResultSet dbResultSet = null;
+
+		log.info("checking if user with index " + userIndex + " can have multiple instances...");
+
+		if (basicDS == null) {
+			log.error("database not initialized");
+			return false;
+		}
+
+		try {
+			dbConnection = basicDS.getConnection();
+			dbStatement = dbConnection.prepareStatement("SELECT `allowmultipleinstances` FROM `" + KDRLiveStream.config.getMySQLDBTablePrefix() + "users` WHERE `index` = (?)");
+			dbStatement.setInt(1, userIndex);
+			dbResultSet = dbStatement.executeQuery();
+
+			if (dbResultSet.next()) { // ResultSet not empty?
+				result = dbResultSet.getBoolean(1);
+			}
+		} catch (ConfigFileErrorException e) {
+			log.error("error reading config variable: " + e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (dbResultSet != null)
+					dbResultSet.close();
+				if (dbStatement != null)
+					dbStatement.close();
+				if (dbConnection != null)
+					dbConnection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (result) {
+			log.info("user with index " + userIndex + " can have multiple instances.");
+		} else {
+			log.error("user with index " + userIndex + " can't have multiple instances.");
+		}
+		
+		return result;
+	}
+
 	public void updateLastSeenForUser(String streamName, int userIndex, boolean userIsPublishing) {
 		Connection dbConnection = null;
 		int result = 0;

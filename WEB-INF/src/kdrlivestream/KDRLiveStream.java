@@ -30,7 +30,7 @@ public class KDRLiveStream extends ApplicationAdapter implements ApplicationCont
 	public boolean appStart(IScope app) {
 		ISchedulingService scheduler = null;
 
-		log.info("kdrlivestream app v1.2 started.");
+		log.info("kdrlivestream app v1.3 started.");
 
 		addListener((IApplication)applicationContext.getBean("authHandler"));
 		registerStreamPublishSecurity(new AuthPubSec());
