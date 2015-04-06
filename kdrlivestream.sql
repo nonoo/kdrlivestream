@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `kdrlivestream-users` (
   `passhash` varchar(40) NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '0',
   `canpublish` tinyint(1) NOT NULL DEFAULT '0',
+  `allowmultipleinstances` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`index`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
