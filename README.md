@@ -18,7 +18,7 @@ ffmpeg -i example.avi -vcodec h264 -vb 250k -force_key_frames "expr:gte(t,n_forc
 Publishing a public stream:
 
 ```
-ffmpeg -i example.avi -vcodec h264 -vb 250k -force_key_frames "expr:gte(t,n_forced*1)" -acodec mp3 -ar 44100 -ab 128k -f flv "rtmp://localhost:1935/kdrlivestream?u=user1@ha5kdr.hu&p=password&public=1/stream1"
+ffmpeg -i example.avi -vcodec h264 -vb 250k -force_key_frames "expr:gte(t,n_forced*1)" -acodec mp3 -ar 44100 -ab 128k -f flv "rtmp://localhost:1935/kdrlivestream?u=user1@ha5kdr.hu&p=password&pub=1/stream1"
 ```
 
 ### How to watch a stream published through *kdrlivestream*
