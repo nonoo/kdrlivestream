@@ -31,6 +31,10 @@ public class PeriodicLastSeenUpdater implements IScheduledJob {
 			if (connUserIsPublishing == null)
 				connUserIsPublishing = false;
 
+			if (!connUserIsPublishing.equals(true)) {
+				connPublicStream = false; // A non-publisher's lastseen table entry can't contain true for public. 
+			}
+
 			if (connPublicStream == null)
 				connPublicStream = false;
 			
